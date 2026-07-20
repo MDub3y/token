@@ -1,5 +1,5 @@
 import { getKeypairFromFile } from "@solana-developers/helpers";
-import { pack, TokenMetadata } from "@solana/spl-token-metadata";
+import { createInitializeInstruction, pack, TokenMetadata } from "@solana/spl-token-metadata";
 import { getMintLen, ExtensionType, TYPE_SIZE, LENGTH_SIZE, getMinimumBalanceForRentExemptAccountWithExtensions, TOKEN_2022_PROGRAM_ID, createInitializeMetadataPointerInstruction, createInitializeMintInstruction } from "@solana/spl-token";
 import { clusterApiUrl, Connection, Keypair, SystemProgram } from "@solana/web3.js";
 
@@ -37,7 +37,7 @@ const createAccountIx = SystemProgram.createAccount({
     programId: TOKEN_2022_PROGRAM_ID
 });
 
-const initializeMetadataIx = createInitializeMetadataPointerInstruction(
+const initializeMetadataPointerIx = createInitializeMetadataPointerInstruction(
     mint.publicKey,
     payer.publicKey,
     mint.publicKey,
@@ -51,3 +51,14 @@ const initializeMintIx = createInitializeMintInstruction(
     null,
     TOKEN_2022_PROGRAM_ID
 );
+
+const initializeMetadata = createInitializeInstruction({
+    mint: mint.publicKey,
+    metadata: mint.publicKey,
+    mintAuthority: payer.publicKey,
+    name: metadata.name,
+    symbol: metadata.symbol,
+    uri: metadata.uri,
+    programId: TOKEN_2022_PROGRAM_ID,
+    updateAuthority: payer.publicKey
+});
