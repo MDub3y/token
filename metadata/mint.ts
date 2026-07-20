@@ -1,5 +1,5 @@
 import { getKeypairFromFile } from "@solana-developers/helpers";
-import { TokenMetadata } from "@solana/spl-token-metadata";
+import { pack, TokenMetadata } from "@solana/spl-token-metadata";
 import { getMintLen, ExtensionType, TYPE_SIZE, LENGTH_SIZE } from "@solana/spl-token";
 import { clusterApiUrl, Connection, Keypair } from "@solana/web3.js";
 
@@ -25,4 +25,4 @@ const mintSpace = getMintLen([
     ExtensionType.MetadataPointer
 ]);
 
-const metadataSpace = TYPE_SIZE + LENGTH_SIZE;  // 2 + 2 bytes
+const metadataSpace = TYPE_SIZE + LENGTH_SIZE + pack(metadata).length;  // 2 + 2 bytes
