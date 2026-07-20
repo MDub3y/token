@@ -82,5 +82,5 @@ const transaction = new Transaction().add(
 const sig = await sendAndConfirmTransaction(connection, transaction, [payer, mint]);
 console.log("Signature: ", sig);
 
-const chainMetadata = getTokenMetadata(connection, mint.publicKey);
+const chainMetadata = await getTokenMetadata(connection, mint.publicKey);
 console.log(`ChainMetadata: `, chainMetadata);
