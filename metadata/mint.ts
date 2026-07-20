@@ -1,7 +1,7 @@
 import { getKeypairFromFile } from "@solana-developers/helpers";
 import { createInitializeInstruction, createUpdateFieldInstruction, pack, TokenMetadata } from "@solana/spl-token-metadata";
 import { getMintLen, ExtensionType, TYPE_SIZE, LENGTH_SIZE, getMinimumBalanceForRentExemptAccountWithExtensions, TOKEN_2022_PROGRAM_ID, createInitializeMetadataPointerInstruction, createInitializeMintInstruction } from "@solana/spl-token";
-import { clusterApiUrl, Connection, Keypair, SystemProgram, Transaction } from "@solana/web3.js";
+import { clusterApiUrl, Connection, Keypair, sendAndConfirmTransaction, SystemProgram, Transaction } from "@solana/web3.js";
 
 const connection = new Connection("http://127.0.0.1:8899", "confirmed");
 
@@ -78,3 +78,7 @@ const transaction = new Transaction().add(
     initializeMetadata,
     updateMetadataField
 );
+
+const sig = await sendAndConfirmTransaction(connection, transaction, [payer, mint]);
+
+console.log("Signature: ", sig);
