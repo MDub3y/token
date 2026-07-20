@@ -25,4 +25,4 @@ const mintSpace = getMintLen([
     ExtensionType.MetadataPointer
 ]);
 
-const metadataSpace = TYPE_SIZE + LENGTH_SIZE;
+const metadataSpace = TYPE_SIZE + LENGTH_SIZE;  // 2 + 2 bytes
