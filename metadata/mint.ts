@@ -1,6 +1,6 @@
 import { getKeypairFromFile } from "@solana-developers/helpers";
 import { pack, TokenMetadata } from "@solana/spl-token-metadata";
-import { getMintLen, ExtensionType, TYPE_SIZE, LENGTH_SIZE } from "@solana/spl-token";
+import { getMintLen, ExtensionType, TYPE_SIZE, LENGTH_SIZE, getMinimumBalanceForRentExemptAccountWithExtensions } from "@solana/spl-token";
 import { clusterApiUrl, Connection, Keypair } from "@solana/web3.js";
 
 const connection = new Connection("http://127.0.0.1:8899", "confirmed");
@@ -26,3 +26,5 @@ const mintSpace = getMintLen([
 ]);
 
 const metadataSpace = TYPE_SIZE + LENGTH_SIZE + pack(metadata).length;  // 2 + 2 bytes
+
+const lamports = await connection.getMinimumBalanceForRentExemption(mintSpace + metadataSpace);
