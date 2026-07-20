@@ -1,7 +1,7 @@
 import { getKeypairFromFile } from "@solana-developers/helpers";
 import { createInitializeInstruction, createUpdateFieldInstruction, pack, TokenMetadata } from "@solana/spl-token-metadata";
 import { getMintLen, ExtensionType, TYPE_SIZE, LENGTH_SIZE, getMinimumBalanceForRentExemptAccountWithExtensions, TOKEN_2022_PROGRAM_ID, createInitializeMetadataPointerInstruction, createInitializeMintInstruction } from "@solana/spl-token";
-import { clusterApiUrl, Connection, Keypair, SystemProgram } from "@solana/web3.js";
+import { clusterApiUrl, Connection, Keypair, SystemProgram, Transaction } from "@solana/web3.js";
 
 const connection = new Connection("http://127.0.0.1:8899", "confirmed");
 
@@ -70,3 +70,11 @@ const updateMetadataField = createUpdateFieldInstruction({
     field: metadata.additionalMetadata[0][0],
     value: metadata.additionalMetadata[0][1],
 });
+
+const transaction = new Transaction().add(
+    createAccountIx,
+    initializeMetadataPointerIx,
+    initializeMintIx,
+    initializeMetadata,
+    updateMetadataField
+);
