@@ -32,4 +32,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ExtensionType::try_calculate_account_len::<Mint>(&[ExtensionType::MetadataPointer])?;
     let metadata_space = metadata.get_packed_len()?;
     let total_space = mint_space + metadata_space;
+
+    let lamports = connection.get_minimum_balance_for_rent_exemption(total_space)?;
 }
