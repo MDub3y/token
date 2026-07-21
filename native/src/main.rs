@@ -27,4 +27,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         mint: mint.pubkey(),
         additional_metadata: vec![("a".to_string(), "b".to_string())],
     };
+
+    let mint_space =
+        ExtensionType::try_calculate_account_len::<Mint>(&[ExtensionType::MetadataPointer])?;
+    let metadata_space = metadata.get_packed_len()?;
+    let total_space = mint_space + metadata_space;
 }
