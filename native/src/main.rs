@@ -62,4 +62,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Some(payer.pubkey()),
         Some(mint.pubkey()), // Points to itself
     )?;
+
+    let init_mint_ix = spl_token_2022::instruction::initialize_mint2(
+        &spl_token_2022::id(),
+        &mint.pubkey(),
+        &payer.pubkey(),
+        None,
+        2,
+    )?;
 }
