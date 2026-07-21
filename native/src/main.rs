@@ -11,4 +11,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map_err(|e| format!("Failed to read keypair from {:?}: {}", keypair_path, e))?;
 
     println!("Payer: {}", payer.pubkey());
+
+    let mint = Keypair::new();
+    println!("Mint: {}", mint.pubkey());
+
+    let name = "only possible on solana".to_string();
+    let symbol = "OPOS".to_string();
+    let uri = "https://c8.alamy.com/comp/3F058AT/spain-champions-2026-fifa-world-cup-2026-soccer-tournament-logo-with-castle-emblem-tshirt-tee-3F058AT.jpg".to_string();
+
+    let metadata = TokenMetadata {
+        name: name.clone(),
+        symbol: symbol.clone(),
+        uri: uri.clone(),
+        update_authority: Some(payer.pubkey()).try_into()?,
+        mint: mint.pubkey(),
+        additional_metadata: vec![("a".to_string(), "b".to_string())],
+    };
 }
