@@ -5,7 +5,10 @@ use solana_sdk::{
     signature::{Keypair, read_keypair_file},
     system_instruction,
 };
-use spl_token_2022::{extension::ExtensionType, state::Mint};
+use spl_token_2022::{
+    extension::{ExtensionType, metadata_pointer},
+    state::Mint,
+};
 use spl_token_metadata_interface::state::TokenMetadata;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -52,4 +55,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         total_space as u64,
         &spl_token_2022::id(),
     );
+
+    let init_metadata_pointer_ix = metadata_pointer::instruction::initialize(
+        &spl_token_2022::id(),
+        &mint.pubkey(),
+        Some(payer.pubkey()),
+        Some(mint.pubkey()), // Points to itself
+    )?;
 }
