@@ -70,4 +70,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         None,
         2,
     )?;
+
+    let init_metadata_ix = init_metadata(
+        &spl_token_2022::id(),
+        &mint.pubkey(),
+        &payer.pubkey(),
+        &mint.pubkey(),
+        &payer.pubkey(),
+        name,
+        symbol,
+        uri,
+    );
 }
