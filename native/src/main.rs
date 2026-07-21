@@ -5,7 +5,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
 
     let home = home_dir().ok_or("Could not locate home directory")?;
-    let keypair_path = home.join("~/.config/solana/id.json");
+    let keypair_path = home.join(".config/solana/id.json");
 
     let payer = read_keypair_file(&keypair_path)
         .map_err(|e| format!("Failed to read keypair from {:?}: {}", keypair_path, e))?;
