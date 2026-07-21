@@ -3,13 +3,19 @@ use solana_client::rpc_client::RpcClient;
 use solana_sdk::{
     commitment_config::CommitmentConfig,
     signature::{Keypair, read_keypair_file},
+    signer::Signer,
     system_instruction,
+    transaction::Transaction,
 };
 use spl_token_2022::{
     extension::{ExtensionType, metadata_pointer},
     state::Mint,
 };
-use spl_token_metadata_interface::state::TokenMetadata;
+use spl_token_metadata_interface::{
+    instruction::{initialize as init_metadata, update_field},
+    state::{Field, TokenMetadata},
+};
+use spl_type_length_value::variable_len_pack::VariableLenPack;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let connection = RpcClient::new_with_commitment(
@@ -23,10 +29,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let payer = read_keypair_file(&keypair_path)
         .map_err(|e| format!("Failed to read keypair from {:?}: {}", keypair_path, e))?;
 
-    println!("Payer: {}", payer.pubkey);
+    println!("Payer: {}", payer.pubkey());
 
     let mint = Keypair::new();
-    println!("Mint: {}", mint.pubkey);
+    println!("Mint: {}", mint.pubkey());
 
     let name = "only possible on solana".to_string();
     let symbol = "OPOS".to_string();
@@ -81,4 +87,37 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         symbol,
         uri,
     );
+
+    let update_metadata_field_ix = update_field(
+        &spl_token_2022::id(),
+        &mint.pubkey(),
+        &payer.pubkey(),
+        Field::Key("a".to_string()),
+        "b".to_string(),
+    );
+
+    let recent_blockhash = connection.get_latest_blockhash()?;
+    let transaction = Transaction::new_signed_with_payer(
+        &[
+            create_account_ix,
+            init_metadata_pointer_ix,
+            init_mint_ix,
+            init_metadata_ix,
+            update_metadata_field_ix,
+        ],
+        Some(&payer.pubkey()),
+        &[&payer, &mint],
+        recent_blockhash,
+    );
+
+    let signature = connection.send_and_confirm_transaction(&transaction)?;
+    println!("Signature: {}", signature);
+
+    let account_data = connection.get_account_data(&mint.pubkey())?;
+    println!(
+        "Mint Account successfully created! Data size: {} bytes",
+        account_data.len()
+    );
+
+    Ok(())
 }
